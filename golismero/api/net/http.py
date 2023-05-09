@@ -459,7 +459,7 @@ class _HTTP(Singleton):
         # Resolve the hostname.
         # FIXME: we're only using the first item, but we could use more
         #        than one, for example iterate through them if they fail.
-        family, socktype, proto, canonname, sockaddr = \
+        family, socktype, sockproto, canonname, sockaddr = \
             getaddrinfo(host, port, 0, SOCK_STREAM)[0]
 
         # Get a connection slot.
@@ -470,7 +470,7 @@ class _HTTP(Singleton):
 
             # Connect to the server.
             try:
-                s = socket(family, socktype, proto)
+                s = socket(family, socktype, sockproto)
                 try:
                     s.settimeout(timeout)
                     s.connect(sockaddr)
@@ -552,6 +552,9 @@ class _HTTP(Singleton):
             # On socket errors, send an exception.
             except error, e:
                 raise NetworkException(str(e))
+
+        # Should never reach this point.
+        raise Exception("INTERNAL ERROR")
 
 
 #------------------------------------------------------------------------------
